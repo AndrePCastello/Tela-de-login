@@ -1,14 +1,12 @@
 import PySimpleGUI as sg
 
-sg.theme('purple')
-
 newemail = 'a'
 newsenha = 1
 
 def login():
     sg.theme('Dark')
     layout = [
-        [sg.Text('Email:'), sg.Input(text_color='white', key='-EMAIL-')],
+        [sg.Text('Usuário:'), sg.Input(text_color='white', key='-EMAIL-')],
         [sg.Text('Senha:'), sg.Input(text_color='white', key='-SENHA-')],
         [sg.Button('Login', key='-LOGIN-')],
         [sg.Button('Esqueci a senha', key="-RECOVER-"), sg.Button('Cadastrar', key='-CADASTRAR-')]
@@ -18,7 +16,7 @@ def login():
 def cadastro():
     sg.theme('Dark')
     Cadastro = [
-        [sg.Text('Novo email:'), sg.Input(key ='-NEWEMAIL-')],
+        [sg.Text('Usuário:'), sg.Input(key ='-NEWEMAIL-')],
         [sg.Text('Nova Senha:'), sg.Input(key ='-NEWSENHA-')],
         [sg.Button('Fazer login')]
 ]
@@ -27,7 +25,8 @@ def cadastro():
 def recover():
     sg.theme('Dark')
     Recover = [
-        [sg.Text('Nova senha'), sg.Input(key="-RECOVER-")]
+        [sg.Text('Nova senha'), sg.Input(key="-RECOVER-")],
+        [sg.Button('Atualizar', key = "-ATUALIZAR-")]
     ]
     return sg.Window('Recover', layout= Recover, finalize=True, size = (500, 300), element_justification='c' )
 
@@ -43,12 +42,15 @@ while True:
         janela2 = cadastro()
         janela1.hide()
     if window == janela2 and event == 'Fazer login':
-        newemail = values["-NEWEMAIL-"]
-        newsenha = values["-NEWSENHA-"]
-        values["-EMAIL-"] = newemail
-        values["-SENHA-"] = newsenha
-        janela2.hide()
-        janela1.un_hide()
+        if values["-NEWEMAIL-"] == "" or ["-NEWSENHA-"] == "":
+            sg.Popup('Digite um usuário ou senha válido')
+        else:
+            newemail = values["-NEWEMAIL-"]
+            newsenha = values["-NEWSENHA-"]
+            values["-EMAIL-"] = newemail
+            values["-SENHA-"] = newsenha
+            janela2.hide()
+            janela1.un_hide()
     if window == janela1 and event == "-LOGIN-":
         print(f'{values["-EMAIL-"], {values["-SENHA-"]}}')
         print(f'{newemail}, {newsenha}')
@@ -59,10 +61,20 @@ while True:
     if window == janela1 and event == "-RECOVER-":
         janela3 = recover()
         janela1.hide()
+    if window == janela3 and event == "-ATUALIZAR-":
+        if values["-RECOVER-"] == "":
+            sg.Popup('Digite alguma senha')
+        else:
+            sg.Popup('A sua senha foi cadastrada!')
+            newsenha = values["-RECOVER-"]
+            values["-SENHA-"] = newsenha
+            print(newsenha)
+            janela3.hide()
+            janela1.un_hide()
+        
     if window == janela3 and event == sg.WIN_CLOSED:
         break
     
-    # Ainda Falta ajustar o "Recover!"
     
 
         
